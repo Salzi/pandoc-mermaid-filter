@@ -9,6 +9,7 @@ from pandocfilters import get_filename4code, get_caption, get_extension
 
 # Environment variables with fallback values
 MERMAID_BIN = os.path.expanduser(os.environ.get('MERMAID_BIN', 'mmdc'))
+RSVG_BIN = os.path.expanduser(os.environ.get('RSVG_BIN', 'rsvg-convert'))
 PUPPETEER_CFG = os.environ.get('PUPPETEER_CFG', None)
 MERMAID_CFG = os.environ.get('MERMAID_CFG', None)
 
@@ -25,6 +26,7 @@ def mermaid(key, value, format_, _):
 
             src = filename + '.mmd'
             dest = filename + '.' + filetype
+            dest2 = filename + '.' + "png"
 
             if not os.path.isfile(dest):
                 txt = code.encode(sys.getfilesystemencoding())
@@ -40,9 +42,14 @@ def mermaid(key, value, format_, _):
                 sys.stderr.write(f"{cmd} \n")
 
                 subprocess.check_call(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                sys.stderr.write('Created image ' + dest + '\n')
+                sys.stderr.write('Created svg image ' + dest + '\n')
 
-            return Para([Image([ident, [], keyvals], caption, [dest, typef])])
+                cmd = [RSVG_BIN, dest, "-o", dest2]
+                sys.stderr.write(f"{cmd} \n")
+                subprocess.check_call(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                sys.stderr.write('Created png image ' + dest + '\n')
+
+            return Para([Image([ident, [], keyvals], caption, [dest2, typef])])
 
 def main():
     toJSONFilter(mermaid)
