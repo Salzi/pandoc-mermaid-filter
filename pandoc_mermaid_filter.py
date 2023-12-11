@@ -22,11 +22,11 @@ def mermaid(key, value, format_, _):
             caption, typef, keyvals = get_caption(keyvals)
 
             filename = get_filename4code("mermaid", code)
-            filetype = get_extension(format_, "svg")
+            filetype = get_extension(format_, "pdf")
 
             src = filename + '.mmd'
             dest = filename + '.' + filetype
-            dest2 = filename + '.' + "png"
+            dest2 = filename + '.' + "pdf"
 
             if not os.path.isfile(dest):
                 txt = code.encode(sys.getfilesystemencoding())
@@ -34,7 +34,7 @@ def mermaid(key, value, format_, _):
                     f.write(txt)
 
                 # Default command to execute
-                cmd = [MERMAID_BIN, "-i", src, "-o", dest]
+                cmd = [MERMAID_BIN, "-f", "-i", src, "-o", dest]
 
                 if MERMAID_CFG is not None:
                     cmd += ["-c", MERMAID_CFG]
@@ -45,12 +45,7 @@ def mermaid(key, value, format_, _):
                 sys.stderr.write(f"{cmd} \n")
 
                 subprocess.check_call(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                sys.stderr.write('Created svg image ' + dest + '\n')
-
-                cmd = [RSVG_BIN, dest, "-o", dest2]
-                sys.stderr.write(f"{cmd} \n")
-                subprocess.check_call(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                sys.stderr.write('Created png image ' + dest + '\n')
+                sys.stderr.write('Created pdf image ' + dest + '\n')
 
             return Para([Image([ident, [], keyvals], caption, [dest2, typef])])
 
