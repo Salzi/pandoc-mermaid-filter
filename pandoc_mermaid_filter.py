@@ -39,6 +39,9 @@ def mermaid(key, value, format_, _):
                 if MERMAID_CFG is not None:
                     cmd += ["-c", MERMAID_CFG]
 
+                if PUPPETEER_CFG is not None:
+                    cmd += ["-p", PUPPETEER_CFG]
+                
                 sys.stderr.write(f"{cmd} \n")
 
                 subprocess.check_call(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
