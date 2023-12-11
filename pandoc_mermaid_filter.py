@@ -47,6 +47,11 @@ def mermaid(key, value, format_, _):
                 subprocess.check_call(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 sys.stderr.write('Created pdf image ' + dest + '\n')
 
+            # If width is specified in keyvals, use it; otherwise, don't set width
+            specified_width = next((v for k, v in keyvals if k == 'width'), None)
+            if specified_width:
+                keyvals += [('width', specified_width)]
+
             return Para([Image([ident, [], keyvals], caption, [dest2, typef])])
 
 def main():
